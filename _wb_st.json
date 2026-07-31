@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"(() => { const s = document.querySelectorAll('.screen'); return Array.from(s).map(e => ({id: e.id, active: e.classList.contains('active'), hidden: e.classList.contains('hidden')})); })()"},"session":"rhythm-party"}

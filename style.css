@@ -1,0 +1,757 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --bg: #0d0d1a;
+    --bg-panel: #1a1a2e;
+    --border: #2d2d44;
+    --accent: #00ff88;
+    --accent2: #ff00aa;
+    --accent3: #ffcc00;
+    --text: #e0e0e0;
+    --text-dim: #8888aa;
+    --danger: #ff4444;
+    --player-a: #00ff88;
+    --player-b: #00aaff;
+    --player-c: #ff00aa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+}
+
+/* 屏幕管理 */
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 像素容器 */
+.pixel-container {
+    max-width: 900px;
+    width: 100%;
+    padding: 30px;
+}
+
+.pixel-title {
+    font-size: 24px;
+    text-align: center;
+    color: var(--accent);
+    text-shadow: 2px 2px 0px var(--accent2);
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.pixel-subtitle {
+    font-size: 14px;
+    color: var(--accent3);
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+
+/* 配置区域 */
+.config-section {
+    background: var(--bg-panel);
+    border: 3px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 4px 4px 0px var(--border);
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 10px;
+}
+
+.setting-row:last-child {
+    margin-bottom: 0;
+}
+
+.setting-row label {
+    color: var(--text-dim);
+}
+
+.setting-row input,
+.setting-row select {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background: var(--bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+    padding: 8px 12px;
+    width: 120px;
+    outline: none;
+}
+
+.setting-row input:focus,
+.setting-row select:focus {
+    border-color: var(--accent);
+}
+
+/* 对齐网格复选框 */
+.grid-checks {
+    display: flex;
+    gap: 12px;
+}
+
+.grid-checks label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.grid-checks input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+    accent-color: var(--accent);
+}
+
+/* 模式选择 */
+.mode-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background: var(--bg);
+    color: var(--text);
+    border: 3px solid var(--border);
+    padding: 10px 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.1s;
+}
+
+.mode-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    box-shadow: 3px 3px 0px var(--accent);
+    color: var(--accent);
+}
+
+.mode-btn.selected {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 3px 3px 0px var(--accent);
+}
+
+.mode-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* 玩家列表 */
+#players-list {
+    margin-bottom: 15px;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-size: 10px;
+}
+
+.player-card:hover {
+    border-color: var(--accent);
+    box-shadow: 2px 2px 0px var(--accent);
+}
+
+.player-card .player-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-card .player-color {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--text);
+}
+
+.player-card .player-name-input {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background: transparent;
+    color: var(--text);
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 4px;
+    width: 120px;
+    outline: none;
+}
+
+.player-card .player-name-input:focus {
+    border-color: var(--accent);
+}
+
+.player-card .player-keys {
+    color: var(--text-dim);
+    font-size: 8px;
+}
+
+.player-card .delete-btn {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    cursor: pointer;
+}
+
+.player-card .delete-btn:hover {
+    background: #ff6666;
+}
+
+/* 玩家自定义音效 */
+.player-card .player-sound {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.player-card .sound-btn {
+    background: var(--bg-panel);
+    color: var(--text-dim);
+    border: 2px solid var(--border);
+    padding: 4px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    cursor: pointer;
+}
+
+.player-card .sound-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.player-card .sound-name {
+    font-size: 8px;
+    color: var(--text-dim);
+    width: 110px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.player-card .sound-select {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    background: var(--bg-panel);
+    color: var(--text-dim);
+    border: 2px solid var(--border);
+    padding: 3px 4px;
+    max-width: 130px;
+    cursor: pointer;
+}
+
+.player-card .sound-select:hover,
+.player-card .sound-select:focus {
+    border-color: var(--accent);
+    color: var(--accent);
+    outline: none;
+}
+
+.player-card .vol-slider {
+    width: 80px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+}
+
+.player-card .vol-slider:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.player-card .vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+}
+
+.player-card .vol-slider::-moz-range-thumb {
+    width: 10px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 0;
+}
+
+.player-card .vol-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    width: 42px;
+    text-align: right;
+}
+
+/* 按钮 */
+.pixel-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background: var(--bg);
+    color: var(--text);
+    border: 3px solid var(--border);
+    padding: 12px 20px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.1s;
+    margin: 5px;
+}
+
+.pixel-btn:hover {
+    border-color: var(--accent);
+    box-shadow: 3px 3px 0px var(--accent);
+    color: var(--accent);
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--accent);
+}
+
+.pixel-btn.primary {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 3px 3px 0px var(--accent);
+}
+
+.pixel-btn.primary:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.pixel-btn.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+    box-shadow: 3px 3px 0px var(--danger);
+    margin-left: 12px;
+}
+
+.pixel-btn.danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.config-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* 按键绑定弹窗 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    color: var(--accent);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.modal-content .hint {
+    color: var(--text-dim);
+    font-size: 10px;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+.modal-content kbd {
+    display: inline-block;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    padding: 4px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--accent3);
+}
+
+.keybind-display {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    min-height: 60px;
+    margin-bottom: 20px;
+}
+
+.key-tag {
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 12px;
+    font-size: 10px;
+}
+
+.player-name {
+    color: var(--accent2);
+    font-size: 10px;
+}
+
+/* 像素盒子 */
+.pixel-box {
+    background: var(--bg-panel);
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0px var(--border);
+}
+
+/* 游戏界面 */
+#game-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.game-header {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.round-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 10px;
+}
+
+.round-info span {
+    color: var(--text-dim);
+}
+
+#phase-display {
+    color: var(--accent);
+}
+
+#timer-display {
+    color: var(--accent3);
+}
+
+/* 挑战模式 B：TEAM 总分 / BPM / MISS 信息条 */
+#mode-info-display {
+    color: var(--accent);
+}
+#mode-info-display:empty {
+    display: none;
+}
+
+/* 节拍轴 */
+.rhythm-track-area {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    padding: 10px;
+}
+
+#rhythm-canvas {
+    width: 100%;
+    height: 200px;
+    background: var(--bg-panel);
+    border: 3px solid var(--border);
+    box-shadow: 3px 3px 0px var(--border);
+    image-rendering: pixelated;
+}
+
+.beat-markers {
+    display: flex;
+    margin-top: 8px;
+    padding: 0 30px; /* 与 canvas 节拍框的左右边距对齐 */
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+.beat-marker {
+    flex: 1;
+    text-align: center;
+}
+
+/* 玩家区域 */
+.players-area {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.game-player {
+    background: var(--bg-panel);
+    border: 3px solid var(--border);
+    padding: 15px 20px;
+    text-align: center;
+    min-width: 140px;
+    position: relative;
+}
+
+.game-player.attacker {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.game-player.defender {
+    border-color: var(--accent2);
+}
+
+.game-player .player-avatar {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
+    border: 2px solid var(--text);
+}
+
+.game-player .player-name {
+    font-size: 10px;
+    margin-bottom: 8px;
+}
+
+.game-player .player-keys {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+}
+
+.game-player .player-score {
+    font-size: 14px;
+    color: var(--accent3);
+}
+
+.game-player .role-badge {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 8px;
+    padding: 4px 8px;
+    background: var(--bg);
+    border: 2px solid;
+}
+
+.game-player.attacker .role-badge {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.game-player.defender .role-badge {
+    color: var(--accent2);
+    border-color: var(--accent2);
+}
+
+/* 游戏控制 */
+.game-controls {
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+/* 结算 */
+#result-screen .pixel-container {
+    text-align: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-panel);
+    border: 2px solid var(--border);
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    font-size: 10px;
+}
+
+/* 挑战模式 B：结算界面的团队总分块 */
+.team-result {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.team-result .team-score {
+    font-size: 24px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0px var(--border);
+}
+
+.team-result .team-best {
+    font-size: 10px;
+    color: var(--text);
+}
+
+.result-item .rank {
+    font-size: 16px;
+    color: var(--accent3);
+    width: 40px;
+}
+
+.result-item .name {
+    flex: 1;
+    text-align: left;
+    margin-left: 15px;
+}
+
+.result-item .score {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+/* 暂停 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay .pixel-box {
+    text-align: center;
+    padding: 40px;
+}
+
+.overlay h2 {
+    color: var(--accent3);
+    margin-bottom: 15px;
+}
+
+.overlay p {
+    color: var(--text-dim);
+    font-size: 10px;
+    margin-bottom: 25px;
+}
+
+/* 闪烁动画 */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.pulse {
+    animation: pulse 0.5s ease-in-out infinite;
+}
+
+/* 命中效果 */
+@keyframes hit {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.hit-effect {
+    animation: hit 0.15s ease-out;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+    .pixel-title {
+        font-size: 16px;
+    }
+    
+    .setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .setting-row input,
+    .setting-row select {
+        width: 100%;
+    }
+    
+    .round-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .game-player {
+        min-width: 100px;
+        padding: 10px;
+    }
+}

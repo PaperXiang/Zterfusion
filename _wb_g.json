@@ -1,0 +1,1 @@
+{"action":"evaluate","args":{"code":"typeof Game !== 'undefined' ? 'ok' : 'missing'"},"session":"rhythm-party"}
