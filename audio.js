@@ -49,7 +49,9 @@ const AudioEngine = (function() {
     function init() {
         if (ctx) return;
         try {
-            ctx = new (window.AudioContext || window.webkitAudioContext)();
+            // latencyHint: 0 请求最小输出缓冲（等价 Unity 的 Best Latency），
+            // 压低按键到出声的延迟；代价是渲染预算变紧，本项目音频图简单，风险可忽略
+            ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 0 });
 
             // 主增益
             masterGain = ctx.createGain();

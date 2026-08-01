@@ -131,6 +131,18 @@ body {
     accent-color: var(--accent);
 }
 
+/* 预设按钮竖排 */
+.preset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+}
+.preset-list .pixel-btn {
+    width: 120px;
+    margin: 0;
+}
+
 /* 模式选择 */
 .mode-list {
     display: flex;

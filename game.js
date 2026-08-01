@@ -34,7 +34,8 @@ const Game = (function() {
     let config = {
         mode: 'casual',     // casual | challenge-a（B/C 预留）
         bpm: 120, beatsPerRound: 4, rounds: 2, timePerRound: 30,
-        grids: [16]             // 进攻音符对齐网格（8/12/16/24 分音，可多选）
+        grids: [16],            // 进攻音符对齐网格（8/12/16/24 分音，可多选）
+        showAttackNotes: true   // 进攻小节是否立即显示音符；false 则在防守小节随播放头出现
     };
 
     let gameState = {
@@ -219,14 +220,41 @@ const Game = (function() {
         // 对齐网格复选框：至少保留一种，全取消时把刚取消的那个勾回来
         if (!Array.isArray(config.grids) || config.grids.length === 0) config.grids = [16];
         const gridChecks = [...document.querySelectorAll('.grid-check')];
+        const syncGridChecks = () => gridChecks.forEach(c => { c.checked = config.grids.includes(parseInt(c.value)); });
+        syncGridChecks();
         gridChecks.forEach(cb => {
-            cb.checked = config.grids.includes(parseInt(cb.value));
             cb.addEventListener('change', () => {
                 config.grids = gridChecks.filter(c => c.checked).map(c => parseInt(c.value));
                 if (config.grids.length === 0) {
                     cb.checked = true;
                     config.grids = [parseInt(cb.value)];
                 }
+                saveSettings();
+            });
+        });
+
+        // 进攻音符即时显示开关
+        const showAttackNotesCb = document.getElementById('show-attack-notes');
+        if (showAttackNotesCb) {
+            showAttackNotesCb.checked = config.showAttackNotes !== false;
+            showAttackNotesCb.addEventListener('change', () => {
+                config.showAttackNotes = showAttackNotesCb.checked;
+                saveSettings();
+            });
+        }
+
+        // 预设：只覆盖开关与网格，不动 BPM/rounds/time 等其它设置
+        [...document.querySelectorAll('.preset-btn')].forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.preset === 'visual') {
+                    config.showAttackNotes = true;
+                    config.grids = [16];
+                } else if (btn.dataset.preset === 'audio') {
+                    config.showAttackNotes = false;
+                    config.grids = [8];
+                }
+                if (showAttackNotesCb) showAttackNotesCb.checked = config.showAttackNotes;
+                syncGridChecks();
                 saveSettings();
             });
         });
@@ -975,12 +1003,18 @@ const Game = (function() {
 
         // 音符（准备阶段不画）
         if (!isReady && attackBar) {
-            gameState.attackNotes.forEach(n => {
-                drawNote(noteX(n.offset), noteY(attacker.id), attacker.color, 12);
-            });
+            // 不立即显示时，进攻小节隐藏攻击音符，迫使玩家靠听觉记忆
+            if (config.showAttackNotes !== false) {
+                gameState.attackNotes.forEach(n => {
+                    drawNote(noteX(n.offset), noteY(attacker.id), attacker.color, 12);
+                });
+            }
         } else if (!isReady) {
-            // 防守小节：进攻方的点不消失，作为复刻目标（easy/hard 都显示）
-            gameState.pendingAttack.forEach(n => {
+            // 防守小节：进攻方的点作为复刻目标；关闭即时显示时随播放头逐个出现
+            const visibleAttack = config.showAttackNotes !== false
+                ? gameState.pendingAttack
+                : gameState.pendingAttack.filter(n => (n.offset / barDur) <= barProgress);
+            visibleAttack.forEach(n => {
                 drawNote(noteX(n.offset), noteY(attacker.id), attacker.color, 12);
             });
             Object.entries(gameState.defenderHits).forEach(([pid, hits]) => {
