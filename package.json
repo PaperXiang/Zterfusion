@@ -1,0 +1,29 @@
+{
+  "name": "zterfusion",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n client,server \"vite\" \"tsx watch server/index.ts\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch server/index.ts",
+    "build": "vue-tsc --noEmit && tsc -p tsconfig.server.json && vite build",
+    "start": "node server-dist/server/index.js",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cometix/claude-code": "^2.1.219",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "concurrently": "^10.0.4",
+    "tsx": "^4.23.9",
+    "typescript": "^5.7.0",
+    "vite": "^7.0.0",
+    "vue-tsc": "^2.2.0"
+  }
+}

@@ -54,6 +54,135 @@ body {
     padding: 30px;
 }
 
+/* 联机大厅沿用原像素风组件，只补充房间码和连接状态所需布局。 */
+.online-screen {
+    overflow-y: auto;
+}
+
+.online-panel {
+    max-width: 720px;
+    text-align: center;
+}
+
+.online-panel .config-section {
+    text-align: left;
+}
+
+.connection-state,
+.room-hint {
+    margin: 12px 0 20px;
+    color: var(--accent);
+    font-size: 9px;
+    text-align: center;
+}
+
+.connection-state.offline,
+.online-error,
+.offline-badge {
+    color: var(--danger);
+}
+
+.online-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 3px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    text-transform: uppercase;
+    outline: none;
+    box-shadow: 3px 3px 0 var(--border);
+}
+
+.online-input:focus {
+    border-color: var(--accent);
+    box-shadow: 3px 3px 0 var(--accent);
+}
+
+.join-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.room-code-input {
+    letter-spacing: 5px;
+}
+
+.wide-btn {
+    width: 100%;
+}
+
+.online-error {
+    min-height: 14px;
+    font-size: 9px;
+    text-align: center;
+}
+
+.online-player-list {
+    display: grid;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.online-player-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 2px solid var(--border);
+    background: var(--bg-panel);
+    font-size: 10px;
+}
+
+.online-player-row .player-color {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+}
+
+.owner-badge,
+.you-badge,
+.offline-badge {
+    margin-left: auto;
+    font-size: 7px;
+}
+
+.you-badge + .offline-badge,
+.owner-badge + .you-badge {
+    margin-left: 0;
+}
+
+.owner-badge { color: var(--accent3); }
+.you-badge { color: var(--player-b); }
+
+.compact-settings {
+    margin-top: 18px;
+}
+
+#online-rhythm-canvas {
+    width: 100%;
+    height: 200px;
+    display: block;
+}
+
+.screen.active.online-game-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.online-phase-display {
+    color: var(--accent) !important;
+}
+
+.online-timer-display {
+    color: var(--accent3) !important;
+}
+
 .pixel-title {
     font-size: 24px;
     text-align: center;
@@ -362,6 +491,17 @@ body {
     box-shadow: 1px 1px 0px var(--accent);
 }
 
+.pixel-btn:disabled,
+.pixel-btn:disabled:hover {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: var(--text-dim);
+    border-color: var(--border);
+    background: var(--bg);
+    box-shadow: 3px 3px 0 var(--border);
+    transform: none;
+}
+
 .pixel-btn.primary {
     border-color: var(--accent);
     color: var(--accent);
@@ -518,7 +658,8 @@ body {
     padding: 10px;
 }
 
-#rhythm-canvas {
+#rhythm-canvas,
+#online-rhythm-canvas {
     width: 100%;
     height: 200px;
     background: var(--bg-panel);
@@ -760,6 +901,15 @@ body {
     .round-info {
         flex-direction: column;
         gap: 8px;
+    }
+
+    .join-row {
+        grid-template-columns: 1fr;
+    }
+
+    .join-row .pixel-btn {
+        width: 100%;
+        margin: 0;
     }
     
     .game-player {

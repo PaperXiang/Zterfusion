@@ -2,16 +2,15 @@
 cd /d "%~dp0"
 echo ==========================================
 echo    ZTERFUSION
-echo    Starting local server with sounds...
+echo    Starting client and Socket.IO server...
 echo ==========================================
 echo.
-start "" "http://localhost:8000"
-where python >nul 2>nul
-if %errorlevel%==0 (
-    echo Server: http://localhost:8000
-    echo Close this window to stop the server.
-    python -m http.server 8000
-) else (
-    py -m http.server 8000
+if not exist "node_modules" (
+    echo Installing dependencies...
+    call npm install
 )
+echo Server: http://localhost:8999
+echo Close this window to stop the server.
+start "" http://localhost:8999
+call npm run dev
 pause

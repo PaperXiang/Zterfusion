@@ -1,2 +1,5 @@
 kimi.exe
 AGENTS.md
+node_modules/
+dist/
+server-dist/
